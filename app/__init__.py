@@ -1,23 +1,22 @@
 from flask import Flask
-from config import init_config
-from pymilvus import connections
-
-app = Flask(__name__)
-init_config(app)
+from flask_cors import CORS  
+from config import init_config, init_milvus_connection, db, init_sqlalchemy
+from .models import db
 
 
-def init_milvus_connection():
-    print("\n=== {:30} ===\n".format("Start connecting to Milvus"))
-    connections.connect(
-        "default",
-        host=app.config['MILVUS_HOST'],
-        port=app.config['MILVUS_PORT'],
-        user=app.config['MILVUS_USER'],
-        password=app.config['MILVUS_PASSWORD']
-    )
-    print("Connected to Milvus")
+def init_app():
+    app = Flask(__name__)
+    CORS(app)
+    
+    init_config(app)
+    init_milvus_connection(app)
+    init_sqlalchemy(app)
+    
+    # Import blueprints and register them here to avoid circular imports
+    from .routes import milvus_bp
+    app.register_blueprint(milvus_bp, url_prefix='/milvus')
 
-
-
-
-from app import routes, models
+    with app.app_context():
+        db.create_all()
+    
+    return app
