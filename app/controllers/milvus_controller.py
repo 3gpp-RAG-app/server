@@ -44,22 +44,25 @@ def search(user_input):
         anns_field="embedings",
         param=search_params,
         limit=5,
-        output_fields=['id', 'original_text', 'title']
+        output_fields=['id', 'original_text', 'doc_title', 'content_title']
     )
 
     ret = []
     for hit in results[0]:
-        row = [hit.id, hit.score, hit.entity.get('original_text'), hit.entity.get('title')]
+        row = [hit.id, hit.score, hit.entity.get('original_text'), hit.entity.get('doc_title'), hit.entity.get('content_title')]
         ret.append(row)
 
     ret.sort(key=lambda x: x[1])
 
     if ret:
-        best_hit_id, best_hit_score, best_hit_text, best_hit_parent_doc = ret[0]
+        best_hit_id, best_hit_score, best_hit_text, best_hit_parent_doc, best_hit_content_list = ret[0]
 
-        return best_hit_text
+        return best_hit_textbest_hit_parent_doc, best_hit_content_list
 
     else:
         print('No results found.')
-        return None
+        return None, None, None
+
+collection.release()
+
 

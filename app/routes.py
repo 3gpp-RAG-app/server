@@ -17,8 +17,14 @@ def milvus_search():
     if not query:
         return jsonify({"error": "Query parameter not provided"}), 400
 
-    results = search(query)
-    return jsonify({"results": results})
+    results_text, results_parent_doc, results_content_list = search(query)
+    response = {
+        "results_text": results_text,
+        "results_parent_doc": results_parent_doc,
+        "results_content_list": results_content_list
+    }
+
+    return jsonify({"results": response})
 
 
 @milvus_bp.route('/logs', methods=['POST'])
