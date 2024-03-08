@@ -27,14 +27,13 @@ def search(user_input):
         data=[embed(user_input)],
         anns_field="embedings",
         param=search_params,
-        limit=5,
+        limit=3,
         output_fields=["id", "original_text", "doc_title", "content_title"],
     )
 
     ret = []
     for hit in results[0]:
         row = [
-            hit.id,
             hit.score,
             hit.entity.get("original_text"),
             hit.entity.get("doc_title"),
@@ -45,16 +44,8 @@ def search(user_input):
     ret.sort(key=lambda x: x[1])
 
     if ret:
-        (
-            best_hit_id,
-            best_hit_score,
-            best_hit_text,
-            best_hit_parent_doc,
-            best_hit_content_list,
-        ) = ret[0]
-
-        return best_hit_text, best_hit_parent_doc, best_hit_content_list
+        return ret
 
     else:
         print("No results found.")
-        return None, None, None
+        return [None]
