@@ -29,20 +29,26 @@ def milvus_search():
     if not query:
         return jsonify({"error": "Query parameter not provided"}), 400
 
-    results_text, results_parent_doc, results_content_list = search(
+    ret_text, ret_parent_doc, ret_content_list = search(
         inject_context(query)
     )
 
     augmented_response = generate_response(query, results_text)
-
-    response = {
-        "results_text": results_text,
-        "results_parent_doc": results_parent_doc,
-        "results_content_list": results_content_list,
-        "augmented_response": augmented_response,
+    if "I could not find an answer." in augmented_response:
+        return jsonify({"augmented_response": augmented_response})
+    
+    retrivals = {
+        "text": ret_text,
+        "parent_doc": ret_parent_doc,
+        "content_list": ret_content_list,
     }
 
-    return jsonify({"results": response})
+    response = {
+        "retrivals": retrivals,
+        "augmented_response": augmented_response
+    }
+
+    return jsonify(response)
 
 
 @milvus_bp.route("/logs", methods=["POST"])

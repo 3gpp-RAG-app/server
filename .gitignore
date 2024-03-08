@@ -6,3 +6,4 @@ venv/
 __pycache__/
 
 config/settings.py
+structure.md
