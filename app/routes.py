@@ -52,8 +52,8 @@ def chat_logs():
         logs = request.form['logs']
 
         conversation = Conversation(
-            conversation_id=conversation_id,
-            messages=messages,
+            conversation_id=uid,
+            messages=logs,
             created_at=datetime.utcnow(),
         )
 
