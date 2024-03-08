@@ -1,13 +1,15 @@
 from pymilvus import Collection
 from openai import OpenAI
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 client = OpenAI()
-OPENAI_ENGINE = app.config["OPENAI_ENGINE"]
-client.api_key = app.config["OPENAI_API_KEY"]
+OPENAI_ENGINE = "text-embedding-3-large"
+client.api_key = os.getenv("OPENAI_API_KEY")
 
 search_latency_fmt = "search latency = {:.4f}s"
-num_entities, dim = (3000,)
+num_entities, dim = (3000,8)
 
 collection = Collection("NR_NG_RAN")
 collection.load()

@@ -1,11 +1,18 @@
 import time
 from flask import Blueprint, request, jsonify, Response
-from app.controllers.milvus_controller import search
+from app.controllers.search_controller import search
+from app.controllers.generatiom_controller import generate_response
 from app.models import Conversation
 from datetime import datetime
 from .models import db
 
 milvus_bp = Blueprint("milvus", __name__)
+
+
+def inject_context(query):
+    context = "in 3gpp technical specification: "
+    contextualized_query = context + query
+    return contextualized_query 
 
 
 @milvus_bp.route("/search", methods=["POST"])
@@ -17,11 +24,16 @@ def milvus_search():
     if not query:
         return jsonify({"error": "Query parameter not provided"}), 400
 
-    results_text, results_parent_doc, results_content_list = search(query)
+    results_text, results_parent_doc, results_content_list = search(inject_context(query))
+
+    augmented_response = generate_response(query, results_text)
+    print(augmented_response)
+
     response = {
         "results_text": results_text,
         "results_parent_doc": results_parent_doc,
         "results_content_list": results_content_list,
+        "augmented_response": augmented_response
     }
 
     return jsonify({"results": response})
