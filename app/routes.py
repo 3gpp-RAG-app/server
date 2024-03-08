@@ -48,10 +48,8 @@ def milvus_search():
 @milvus_bp.route("/logs", methods=["POST"])
 def chat_logs():
     try:
-        chat_data = request.get_json()
-
-        conversation_id = chat_data.get("uid")
-        messages = chat_data.get("logs")
+        uid = request.form['uid']
+        logs = request.form['logs']
 
         conversation = Conversation(
             conversation_id=conversation_id,
