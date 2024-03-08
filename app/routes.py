@@ -1,4 +1,4 @@
-import time
+import time, uuid
 from flask import Blueprint, request, jsonify, Response
 from app.controllers.search_controller import search
 from app.controllers.generatiom_controller import generate_response
@@ -8,6 +8,10 @@ from .models import db
 
 milvus_bp = Blueprint("milvus", __name__)
 
+@milvus_bp.route("/uid", methods=["GET"])
+def generate_uid():
+    uid = str(uuid.uuid4())
+    return jsonify({"uid": uid})
 
 def inject_context(query):
     context = "in 3gpp technical specification: "
@@ -43,10 +47,11 @@ def milvus_search():
 def chat_logs():
     try:
         chat_data = request.get_json()
+        print(chat_data)
 
-        conversation_id = chat_data.get("conversation_id")
+        conversation_id = chat_data.get("uid")
 
-        messages = chat_data.get("messages")
+        messages = chat_data.get("logs")
         print(messages)
         conversation = Conversation(
             conversation_id=conversation_id,
@@ -62,7 +67,6 @@ def chat_logs():
             jsonify(
                 {
                     "success": True,
-                    "message": "Chat data added to the database successfully.",
                 }
             ),
             200,
