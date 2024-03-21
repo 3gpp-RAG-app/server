@@ -164,23 +164,39 @@ def generate_response(query, ret_list):
 ```
 The system prompt is stricly instructing the generative model to answer users questions only from the providing answers unless it is found in the retreived "refrences".
 
-That cause the model to refrain from generating answers if the information is not found in the retrieved source.
+That cause the model to refrain from generating answers if the information is not found in the retrieved source regardless of whether it has seen the information before in its training data or not.
+
+![Picture 3](/static/images/ug1.png)
 
 While this adds a layer of safety, source checking remains critical to ensure answers are derived from the correct documents.
 
 ##  Usage
 Ensure you have Python installed on your system.
+
 Install the required dependencies using pip install -r requirements.txt.
+
 Set up your configuration in config/settings.py.
+
 Activate the virtual environment (venv) using source venv/bin/activate.
+
+create a .env file and insert your OpenAI API key into it.
+
 Run the application using python run.py.
+
 Access the API endpoints using appropriate HTTP methods and URIs as described above.
-Additional Information
+
+### Additional Information
+
 This project connects to two databases: Milvus (vector database) and MySQL (relational database).
+
 It utilizes similarity search to retrieve the best hits from the vector database.
+
 The retrieved hits are passed to a generative model to generate answers to user queries.
+
 Finally, the application provides users with answers to their questions along with the source information returned in the server response from the search call.
 For more detailed information, refer to the codebase and documentation within the project.
 
-Contributing
-Contributions are welcome! Please refer to the contribution guidelines in the CONTRIBUTING.md file for more details.
+
+### Contributing
+
+To be added here later
