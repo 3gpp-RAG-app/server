@@ -21,7 +21,7 @@ In the root directory of the app, you'll find a compose.yaml file. This file han
 
 * Image mariadb: MySQL Database
 
-* Image nmpimage:  Client App (react-app)
+* Image nmpimage:  Client side App [React-app](https://github.com/3gpp-RAG-app/react-app-v01.git)
 
 For the server-app, you'll need to create a .env file to manage environment variables.
 Below is the example of the expected .env file with placeholders for necessary variables:
