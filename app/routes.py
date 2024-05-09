@@ -1,7 +1,8 @@
 import time, uuid
 from flask import Blueprint, request, jsonify, Response
-from app.controllers.search_controller import search
-from app.controllers.generatiom_controller import generate_response
+from app.controllers.search_controller import final_ranking
+from app.controllers.generation_controller import generate_response
+from app.controllers.expand_queries import expand_query
 from app.models import Conversation
 from datetime import datetime
 from .models import db
@@ -15,12 +16,6 @@ def generate_uid():
     return jsonify({"uid": uid})
 
 
-def inject_context(query):
-    context = "in 3gpp technical specification: "
-    contextualized_query = context + query
-    return contextualized_query
-
-
 @milvus_bp.route("/search", methods=["POST"])
 def milvus_search():
     data = request.get_json()
@@ -29,7 +24,8 @@ def milvus_search():
     if not query:
         return jsonify({"error": "Query parameter not provided"}), 400
 
-    ret_list = search(inject_context(query))
+    
+    ret_list = final_ranking(expand_query(query))
 
     augmented_response = generate_response(query, ret_list)
     if "I could not find an answer." in augmented_response:
@@ -39,8 +35,9 @@ def milvus_search():
         retrivals_list = []
 
         for ret in ret_list:
-            ret_score, ret_text, ret_parent_doc, ret_content_list = ret
+            ret_score, ret_id, ret_text, ret_parent_doc, ret_content_list = ret
             retrival = {
+                "id" : ret_id,
                 "score": ret_score,
                 "text": ret_text,
                 "parent_doc": ret_parent_doc,
@@ -86,3 +83,4 @@ def chat_logs():
 
         traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
+

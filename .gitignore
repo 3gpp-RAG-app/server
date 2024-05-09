@@ -6,4 +6,6 @@ venv/
 __pycache__/
 
 config/settings.py
+app/controllers/rerank.py
+app/controllers/generate_embeddings.py
 structure.md
